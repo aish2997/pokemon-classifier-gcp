@@ -77,6 +77,10 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: ${{ vars.PROJECT_ID }}
+          
+      - name: Authenticate Docker to GCR
+        run: |
+          gcloud auth configure-docker --quiet
 
       - name: Build Docker image
         run: |
@@ -126,7 +130,7 @@ jobs:
             -var 'project_id=${{ vars.PROJECT_ID }}' \
             -var 'docker_image=${{ env.IMAGE_NAME }}' \
             -out=plan.tfplan
-            
+
       - name: Terraform Apply
         working-directory: ./terraform
         shell: sh
