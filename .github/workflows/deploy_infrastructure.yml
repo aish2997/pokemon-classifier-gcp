@@ -81,7 +81,11 @@ jobs:
       - name: Set Terraform Environment Variables
         run: |
           echo "TF_VAR_project_id=${{ vars.PROJECT_ID }}" >> $GITHUB_ENV
-                 
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.1.7"
+
       - name: Terraform Init
         working-directory: ./terraform
         shell: sh
