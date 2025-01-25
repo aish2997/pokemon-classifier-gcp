@@ -78,6 +78,14 @@ jobs:
         with:
           project_id: ${{ vars.PROJECT_ID }}
 
+      - name: Zip the Cloud Function code
+        working-directory: ./app/gcs_event_processor
+        run: zip -r gcs_event_processor.zip .
+    
+      - name: Upload the Cloud Function zip to GCS
+        run: |
+          gsutil cp gcs_event_processor.zip gs://${{ env.BUCKET_NAME }}/
+
       - name: Authenticate Docker to GCR
         run: |
           gcloud auth configure-docker --quiet
@@ -91,7 +99,7 @@ jobs:
       - name: Push Docker image to GCR
         run: |
           docker push ${{ env.IMAGE_NAME }}
-          
+
       - name: Set Terraform Environment Variables
         run: |
           echo "TF_VAR_project_id=${{ vars.PROJECT_ID }}" >> $GITHUB_ENV

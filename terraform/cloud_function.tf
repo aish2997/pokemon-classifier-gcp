@@ -1,9 +1,3 @@
-resource "google_storage_bucket_notification" "gcs_to_pubsub" {
-  bucket         = var.gcs_bucket_name
-  topic          = google_pubsub_topic.image_processing.id
-  payload_format = "JSON_API_V1"
-}
-
 resource "google_cloudfunctions_function" "process_image" {
   name        = "process-image"
   description = "Triggered when a new image is uploaded to the GCS bucket."
@@ -11,7 +5,7 @@ resource "google_cloudfunctions_function" "process_image" {
   region      = var.region
 
   available_memory_mb   = 512
-  source_archive_bucket = var.gcs_bucket_name
+  source_archive_bucket = google_storage_bucket.image_bucket.name
   source_archive_object = "gcs_event_processor.zip"
 
   entry_point = "process_image"
@@ -22,6 +16,10 @@ resource "google_cloudfunctions_function" "process_image" {
 
   event_trigger {
     event_type = "google.pubsub.topic.publish"
-    resource   = google_pubsub_topic.image_processing.name
+    resource   = google_pubsub_topic.image_processing.id
   }
+  depends_on = [
+    google_storage_bucket.image_bucket,
+    google_pubsub_topic.image_processing
+  ]
 }
