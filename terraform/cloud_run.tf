@@ -26,8 +26,8 @@ resource "google_cloud_run_service" "image_classifier" {
 }
 
 resource "google_cloud_run_service_iam_member" "allow_all" {
-  service = google_cloud_run_service.image_classifier.name
+  service  = google_cloud_run_service.image_classifier.name
   location = var.region
-  role = "roles/run.invoker"
-  member = "allUsers"
+  role     = "roles/run.invoker"
+  member   = "allUsers"
 }
