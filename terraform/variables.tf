@@ -18,3 +18,8 @@ variable "cloud_run_name" {
   type        = string
   default     = "image-classifier"
 }
+
+variable "docker_image" {
+  description = "Docker image to deploy to Cloud Run"
+  type        = string
+}

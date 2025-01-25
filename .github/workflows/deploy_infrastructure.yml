@@ -78,6 +78,17 @@ jobs:
         with:
           project_id: ${{ vars.PROJECT_ID }}
 
+      - name: Build Docker image
+        run: |
+          IMAGE_NAME="gcr.io/${{ vars.PROJECT_ID }}/${{ vars.CLOUD_RUN_NAME }}:latest"
+          docker build -t $IMAGE_NAME ./app/image_classifier
+          echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
+
+      # Step 5: Push Docker image to GCR
+      - name: Push Docker image to GCR
+        run: |
+            docker push ${{ env.IMAGE_NAME }}
+
       - name: Set Terraform Environment Variables
         run: |
           echo "TF_VAR_project_id=${{ vars.PROJECT_ID }}" >> $GITHUB_ENV
@@ -106,12 +117,16 @@ jobs:
         run: |
           terraform fmt -check
       
+      # Step 10: Terraform Plan
       - name: Terraform Plan
         working-directory: ./terraform
-        shell: sh
         run: |
-          terraform plan -var-file=${{ needs.extract-environment-name.outputs.tfvars }} -var 'project_id=${{ vars.PROJECT_ID }}' -out=plan.tfplan
-
+          terraform plan \
+            -var-file=${{ needs.extract-environment-name.outputs.tfvars }} \
+            -var 'project_id=${{ vars.PROJECT_ID }}' \
+            -var 'docker_image=${{ env.IMAGE_NAME }}' \
+            -out=plan.tfplan
+            
       - name: Terraform Apply
         working-directory: ./terraform
         shell: sh
