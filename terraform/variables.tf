@@ -12,3 +12,9 @@ variable "environment" {
   type        = string
   description = "Deployment environment (dev/test/prod)"
 }
+
+variable "cloud_run_name" {
+  description = "Name of the Cloud Run service"
+  type        = string
+  default     = "image-classifier"
+}
