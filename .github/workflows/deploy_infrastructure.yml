@@ -86,7 +86,7 @@ jobs:
         uses: google-github-actions/upload-cloud-storage@v2
         with:
           path: ./app/gcs_event_processor/gcs_event_processor.zip
-          destination: ${{ env.BUCKET_NAME }}/
+          destination: pokemon-classifier-d-state/
           gzip: false
           parent: false
           process_gcloudignore: false
