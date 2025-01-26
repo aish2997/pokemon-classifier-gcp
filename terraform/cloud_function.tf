@@ -22,15 +22,6 @@ resource "google_cloudfunctions2_function" "process_image" {
     max_instance_count = 3000    # Adjust based on your scaling needs
   }
 
-  event_trigger {
-    event_type = "google.cloud.storage.object.v1.finalized" # GCS trigger for Gen2
-    event_filters {
-      attribute = "bucket"
-      value     = google_storage_bucket.image_bucket.name
-    }
-    trigger_region = var.region # Specify the region for the trigger
-  }
-
   depends_on = [
     google_storage_bucket.image_bucket,
     google_pubsub_topic.image_processing
