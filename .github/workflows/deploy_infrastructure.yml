@@ -82,10 +82,14 @@ jobs:
         working-directory: ./app/gcs_event_processor
         run: zip -r gcs_event_processor.zip .
     
-      - name: Upload the Cloud Function zip to GCS
-        working-directory: ./app/gcs_event_processor
-        run: |
-          gsutil cp gcs_event_processor.zip ${{ env.BUCKET_NAME }}/
+      - name: Upload zip to GCS bucket
+        uses: google-github-actions/upload-cloud-storage@v2
+        with:
+          path: ./app/gcs_event_processor/gcs_event_processor.zip
+          destination: ${{ env.BUCKET_NAME }}/
+          gzip: false
+          parent: false
+          process_gcloudignore: false
 
       - name: Authenticate Docker to GCR
         run: |
