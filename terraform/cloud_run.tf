@@ -9,7 +9,7 @@ resource "google_cloud_run_service" "image_classifier" {
         image = var.docker_image
         resources {
           limits = {
-            memory = "1Gi"
+            memory = "4Gi"
             cpu    = "1"
           }
         }
