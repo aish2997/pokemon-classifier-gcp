@@ -23,12 +23,12 @@ variable "docker_image" {
   description = "Docker image to deploy to Cloud Run"
   type        = string
 }
-
+/*
 variable "gcs_bucket_name" {
   description = "GCS bucket name for storing images"
   type        = string
 }
-
+*/
 variable "pubsub_topic_name" {
   description = "Pub/Sub topic name for GCS event notifications"
   type        = string
