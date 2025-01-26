@@ -1,4 +1,3 @@
-/*
 resource "google_storage_bucket" "image_bucket" {
   name          = var.gcs_bucket_name
   location      = var.region
@@ -10,4 +9,3 @@ resource "google_storage_bucket" "image_bucket" {
     payload_format = "JSON_API_V1"
   }
 }
-*/
