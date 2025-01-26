@@ -10,7 +10,7 @@ resource "google_cloud_run_service" "image_classifier" {
         resources {
           limits = {
             memory = "4Gi"
-            cpu    = "1"
+            cpu    = "4"
           }
         }
       }
