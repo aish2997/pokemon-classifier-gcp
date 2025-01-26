@@ -1,8 +1,10 @@
+import functions_framework
 from google.cloud import storage, bigquery
 import requests
 import json
 import base64
 
+@functions_framework.http
 def process_image(event, context):
     bucket_name = event['bucket']
     file_name = event['name']
