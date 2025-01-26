@@ -8,4 +8,4 @@ RUN pip install --no-cache-dir tensorflow opencv-python-headless numpy flask gun
 
 EXPOSE 8080
 
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8080", "app:app"]
+CMD ["gunicorn", "-w", "1", "-b", "0.0.0.0:8080", "app:app"]
