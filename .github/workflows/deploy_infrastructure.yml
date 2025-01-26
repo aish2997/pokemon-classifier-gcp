@@ -83,6 +83,7 @@ jobs:
         run: zip -r gcs_event_processor.zip .
     
       - name: Upload the Cloud Function zip to GCS
+        working-directory: ./app/gcs_event_processor
         run: |
           gsutil cp gcs_event_processor.zip ${{ env.BUCKET_NAME }}/
 
