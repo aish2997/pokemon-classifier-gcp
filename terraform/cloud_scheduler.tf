@@ -3,7 +3,7 @@ resource "google_cloud_scheduler_job" "process_image_trigger" {
   description = "Trigger Cloud Function to process images daily at 5 AM CET"
   schedule    = "0 5 * * *" # Cron format for 5 AM daily in UTC (CET = UTC+1 or +2 during DST)
 
-  time_zone   = "Europe/Stockholm" # Set to CET timezone
+  time_zone = "Europe/Stockholm" # Set to CET timezone
 
   http_target {
     uri         = google_cloudfunctions2_function.process_image.service_config[0].uri
