@@ -4,7 +4,7 @@ resource "google_cloudfunctions2_function" "process_image" {
   location    = var.region # Gen2 uses `location` instead of `region`.
   build_config {
     runtime     = "python39"
-    entry_point = "process_image"
+    entry_point = "process_images" # Ensure this matches the Python function
     source {
       storage_source {
         bucket = "pokemon-classifier-d-state"
@@ -12,7 +12,9 @@ resource "google_cloudfunctions2_function" "process_image" {
       }
     }
     environment_variables = {
-      CLOUD_RUN_URL = google_cloud_run_service.image_classifier.status[0].url
+      CLOUD_RUN_URL   = google_cloud_run_service.image_classifier.status[0].url
+      GCS_BUCKET_NAME = google_storage_bucket.image_bucket.name
+      BQ_TABLE_ID     = "${google_bigquery_dataset.image_data.dataset_id}.${google_bigquery_table.image_classifications.table_id}"
     }
   }
 
@@ -24,5 +26,6 @@ resource "google_cloudfunctions2_function" "process_image" {
 
   depends_on = [
     google_storage_bucket.image_bucket,
+    google_bigquery_table.image_classifications
   ]
 }
