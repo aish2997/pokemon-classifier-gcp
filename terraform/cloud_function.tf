@@ -7,8 +7,8 @@ resource "google_cloudfunctions2_function" "process_image" {
     entry_point = "process_image"
     source {
       storage_source {
-        bucket = google_storage_bucket.image_bucket.name
-        object = "pokemon-classifier-d-state/gcs_event_processor.zip"
+        bucket = "pokemon-classifier-d-state"
+        object = "gcs_event_processor.zip"
       }
     }
     environment_variables = {
