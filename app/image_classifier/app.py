@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 # Load model and weights
 model = MobileNetV3Small(weights=None)
-model.load_weights("weights_mobilenet_v3_small_224_1.0_float.h5")
+model.load_weights("weights/weights_mobilenet_v3_small_224_1.0_float.h5")
 
 with open("imagenet_class_index.json", "r") as f:
     class_index = json.load(f)
