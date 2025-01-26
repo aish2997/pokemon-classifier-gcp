@@ -6,7 +6,7 @@ resource "google_cloud_scheduler_job" "process_image_trigger" {
   time_zone = "Europe/Stockholm" # Set to CET timezone
 
   http_target {
-    uri         = google_cloudfunctions2_function.process_image.service_config[0].url # Correct URL for Cloud Function
+    uri         = "https://${var.region}-${var.project_id}.cloudfunctions.net/${google_cloudfunctions2_function.process_image.name}"
     http_method = "POST"
 
     oidc_token {
