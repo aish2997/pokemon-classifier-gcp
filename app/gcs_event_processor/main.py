@@ -1,28 +1,22 @@
-import os
+from flask import Flask, request, jsonify
 from google.cloud import storage, bigquery
+import os
 import requests
-import functions_framework
 
-@functions_framework.http
-def process_images(request):
-    # Get environment variables
-    cloud_run_url = os.getenv("CLOUD_RUN_URL")
-    if not cloud_run_url:
-        raise ValueError("CLOUD_RUN_URL environment variable is not set.")
+app = Flask(__name__)
 
-    bucket_name = os.getenv("GCS_BUCKET_NAME")
-    if not bucket_name:
-        raise ValueError("GCS_BUCKET_NAME environment variable is not set.")
+# Get environment variables
+CLOUD_RUN_URL = "https://image-classifier-fb6h7y5eka-ew.a.run.app"
+GCS_BUCKET_NAME = "pokemon-classifier-d-image-upload-bucket"
+BQ_TABLE_ID = "pokemon-classifier-d.image_data.image_classifications"
 
-    table_id = os.getenv("BQ_TABLE_ID")
-    if not table_id:
-        raise ValueError("BQ_TABLE_ID environment variable is not set.")
+# Initialize GCS and BigQuery clients
+storage_client = storage.Client()
+bq_client = bigquery.Client()
+bucket = storage_client.bucket(GCS_BUCKET_NAME)
 
-    # Initialize GCS and BigQuery clients
-    storage_client = storage.Client()
-    bq_client = bigquery.Client()
-    bucket = storage_client.bucket(bucket_name)
-
+@app.route("/process_images", methods=["POST"])
+def process_images():
     # Define directories
     incoming_dir = "incoming/"
     archive_dir = "archive/"
@@ -45,7 +39,7 @@ def process_images(request):
         try:
             # Call the image classifier API
             response = requests.post(
-                f"{cloud_run_url}/classify",
+                f"{CLOUD_RUN_URL}/classify",
                 files={"image": img_data}
             )
             if response.status_code != 200:
@@ -64,7 +58,7 @@ def process_images(request):
                 "score": result["score"],
                 "timestamp": blob.time_created.isoformat()  # Use GCS object's timestamp
             }]
-            bq_client.insert_rows_json(table_id, rows_to_insert)
+            bq_client.insert_rows_json(BQ_TABLE_ID, rows_to_insert)
 
             print(f"Successfully processed and saved {file_name}.")
             # Move file to archive directory
@@ -75,8 +69,7 @@ def process_images(request):
             # Move file to error directory
             move_blob(blob, error_dir)
 
-    return "All files in 'incoming/' processed.", 200
-
+    return jsonify({"message": "All files in 'incoming/' processed."}), 200
 
 def move_blob(blob, destination_dir):
     """
