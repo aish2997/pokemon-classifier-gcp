@@ -24,6 +24,5 @@ resource "google_cloudfunctions2_function" "process_image" {
 
   depends_on = [
     google_storage_bucket.image_bucket,
-    google_pubsub_topic.image_processing
   ]
 }
