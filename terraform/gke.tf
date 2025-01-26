@@ -52,7 +52,7 @@ resource "kubernetes_deployment" "gcs_fetcher" {
       }
 
       spec {
-        containers {
+        container {
           name  = "gcs-fetcher"
           image = var.gcs_fetcher_image
 
@@ -100,7 +100,7 @@ resource "kubernetes_deployment" "image_classifier" {
       }
 
       spec {
-        containers {
+        container {
           name  = "image-classifier"
           image = var.image_classifier_image
           resources {
@@ -115,7 +115,7 @@ resource "kubernetes_deployment" "image_classifier" {
   }
 }
 
-# Expose Services via LoadBalancer
+# Expose GCS Fetcher Service
 resource "kubernetes_service" "gcs_fetcher_service" {
   metadata {
     name      = "gcs-fetcher-service"
@@ -136,6 +136,7 @@ resource "kubernetes_service" "gcs_fetcher_service" {
   }
 }
 
+# Expose Image Classifier Service
 resource "kubernetes_service" "image_classifier_service" {
   metadata {
     name      = "image-classifier-service"
