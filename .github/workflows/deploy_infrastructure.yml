@@ -78,37 +78,27 @@ jobs:
         with:
           project_id: ${{ vars.PROJECT_ID }}
 
-      - name: Zip the Cloud Function code
-        working-directory: ./app/gcs_event_processor
-        run: zip -r gcs_event_processor.zip .
-    
-      - name: Upload zip to GCS bucket
-        uses: google-github-actions/upload-cloud-storage@v2
-        with:
-          path: ./app/gcs_event_processor/gcs_event_processor.zip
-          destination: pokemon-classifier-d-state/
-          gzip: false
-          parent: false
-          process_gcloudignore: false
-
       - name: Authenticate Docker to GCR
         run: |
           gcloud auth configure-docker --quiet
 
-      - name: Build Docker image
+      - name: Build Docker images
         run: |
-          IMAGE_NAME="gcr.io/${{ vars.PROJECT_ID }}/${{ vars.CLOUD_RUN_NAME }}:latest"
-          docker build -t $IMAGE_NAME ./app/image_classifier
-          echo "IMAGE_NAME=$IMAGE_NAME" >> $GITHUB_ENV
+          docker build -t gcr.io/${{ vars.PROJECT_ID }}/gcs-fetcher ./app/gcs_event_processor
+          docker build -t gcr.io/${{ vars.PROJECT_ID }}/image-classifier ./app/image_classifier
 
-      - name: Push Docker image to GCR
-        run: |
-          docker push ${{ env.IMAGE_NAME }}
+          docker push gcr.io/${{ vars.PROJECT_ID }}/gcs-fetcher
+          docker push gcr.io/${{ vars.PROJECT_ID }}/image-classifier
 
-      - name: Set Terraform Environment Variables
+          echo "GCS_FETCHER_IMAGE=gcr.io/${{ vars.PROJECT_ID }}/gcs-fetcher:latest" >> $GITHUB_ENV
+          echo "IMAGE_CLASSIFIER_IMAGE=gcr.io/${{ vars.PROJECT_ID }}/image-classifier:latest" >> $GITHUB_ENV
+
+      - name: Set Terraform Variables
         run: |
           echo "TF_VAR_project_id=${{ vars.PROJECT_ID }}" >> $GITHUB_ENV
-
+          echo "TF_VAR_gcs_fetcher_image=${{ env.GCS_FETCHER_IMAGE }}" >> $GITHUB_ENV
+          echo "TF_VAR_image_classifier_image=${{ env.IMAGE_CLASSIFIER_IMAGE }}" >> $GITHUB_ENV
+  
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.1.7"
@@ -140,7 +130,6 @@ jobs:
           terraform plan \
             -var-file=${{ needs.extract-environment-name.outputs.tfvars }} \
             -var 'project_id=${{ vars.PROJECT_ID }}' \
-            -var 'docker_image=${{ env.IMAGE_NAME }}' \
             -out=plan.tfplan
 
       - name: Terraform Apply
