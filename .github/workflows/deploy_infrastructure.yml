@@ -84,7 +84,7 @@ jobs:
     
       - name: Upload the Cloud Function zip to GCS
         run: |
-          gsutil cp gcs_event_processor.zip gs:/${{ env.BUCKET_NAME }}/
+          gsutil cp gcs_event_processor.zip ${{ env.BUCKET_NAME }}/
 
       - name: Authenticate Docker to GCR
         run: |
