@@ -130,7 +130,7 @@ jobs:
 
       - name: Set up GKE credentials
         run: |
-          gcloud container clusters get-credentials my-gke-cluster --region ${{ secrets.GKE_REGION }}
+          gcloud container clusters get-credentials my-gke-cluster --region europe-west1
 
       - name: Deploy to GKE
         run: |
