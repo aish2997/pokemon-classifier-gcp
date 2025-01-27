@@ -47,7 +47,7 @@ gcloud iam workload-identity-pools providers create-oidc github-actions-provider
   --display-name="GitHub Actions Provider" \
   --issuer-uri="https://token.actions.githubusercontent.com" \
   --attribute-mapping="attribute.aud=assertion.aud,attribute.actor=assertion.actor,attribute.repository=assertion.repository,google.subject=assertion.sub" \
-  --attribute-condition="attribute.repository=='aish2997/blog-website'"
+  --attribute-condition="attribute.repository=='aish2997/pokemon-classifier-gcp'"
 ```
 
 ### Explanation of Commands
@@ -59,7 +59,7 @@ gcloud iam workload-identity-pools providers create-oidc github-actions-provider
 2. **OIDC Provider:**
    - Links GitHub Actions to GCP using OpenID Connect (OIDC).
    - Maps attributes like repository, aud, and actor to GCP attributes.
-   - Restricts authentication to the repository `aish2997/blog-website`.
+   - Restricts authentication to the repository `aish2997/pokemon-classifier-gcp`.
 
 ### Verification
 
@@ -99,7 +99,7 @@ Assign necessary IAM roles to the service account:
 export SA_EMAIL="github-actions-sa@$PROJECT_NAME.iam.gserviceaccount.com"
 export PROJECT_NUMBER=$(gcloud projects describe $PROJECT_NAME --format="value(projectNumber)")
 export POOL_NAME="github-actions-pool"
-export GITHUB_REPO="aish2997/blog-website"
+export GITHUB_REPO="aish2997/pokemon-classifier-gcp"
 
 # DNS Administrator
 gcloud projects add-iam-policy-binding "$PROJECT_NAME" \
