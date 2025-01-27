@@ -82,7 +82,6 @@ jobs:
       - name: Authenticate and configure kubectl for GKE
         run: |
           gcloud components install gke-gcloud-auth-plugin
-          gcloud container clusters get-credentials  ml-classifier-cluster --region europe-west1 --project ${{ vars.PROJECT_ID  }}
 
       - name: Set Terraform Variables
         run: |
@@ -128,3 +127,11 @@ jobs:
         shell: sh
         run: |
           terraform apply "plan.tfplan"
+
+      - name: Set up GKE credentials
+        run: |
+          gcloud container clusters get-credentials my-gke-cluster --region ${{ secrets.GKE_REGION }}
+
+      - name: Deploy to GKE
+        run: |
+          kubectl apply -f kubernetes/
