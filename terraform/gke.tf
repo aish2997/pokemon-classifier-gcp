@@ -50,7 +50,7 @@ resource "kubernetes_deployment" "gcs_fetcher" {
       spec {
         container {
           name  = "gcs-fetcher"
-          image = "gcs-fetcher"
+          image = "gcr.io/pokemon-classifier-d/gcs-fetcher"
 
         }
       }
@@ -84,7 +84,7 @@ resource "kubernetes_deployment" "image_classifier" {
       spec {
         container {
           name  = "image-classifier"
-          image = "image-classifier"
+          image = "gcr.io/pokemon-classifier-d/image-classifier"
           resources {
             limits = {
               memory = "2Gi"
