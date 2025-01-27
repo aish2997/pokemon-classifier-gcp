@@ -16,6 +16,17 @@ with open("imagenet_class_index.json", "r") as f:
     class_index = json.load(f)
 
 def custom_decode_predictions(preds, top=1):
+    """
+    Decodes the predictions from the model into human-readable labels.
+
+    Args:
+        preds (np.ndarray): Array of predictions from the model.
+        top (int): Number of top predictions to return for each input.
+
+    Returns:
+        list: A list of decoded predictions. Each prediction is a list of tuples
+              with the format (class_id, class_description, probability).
+    """
     results = []
     for pred in preds:
         top_indices = pred.argsort()[-top:][::-1]
@@ -25,6 +36,17 @@ def custom_decode_predictions(preds, top=1):
 
 @app.route('/classify', methods=['POST'])
 def classify():
+    """
+    Handles the image classification request.
+
+    This function accepts an image file through a POST request, preprocesses the image,
+    and predicts its class using the MobileNetV3Small model.
+
+    Returns:
+        Response: A JSON response containing the predicted class, description, and confidence score.
+
+        If no image is uploaded, returns a 400 error with a message.
+    """
     file = request.files.get('image')
     if not file:
         return jsonify({"error": "No image uploaded"}), 400
