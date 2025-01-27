@@ -78,21 +78,6 @@ jobs:
         with:
           project_id: ${{ vars.PROJECT_ID }}
 
-      - name: Authenticate Docker to GCR
-        run: |
-          gcloud auth configure-docker --quiet
-
-      - name: Build Docker images
-        run: |
-          docker build -t gcr.io/${{ vars.PROJECT_ID }}/gcs-fetcher ./app/gcs_event_processor
-          docker build -t gcr.io/${{ vars.PROJECT_ID }}/image-classifier ./app/image_classifier
-
-          docker push gcr.io/${{ vars.PROJECT_ID }}/gcs-fetcher
-          docker push gcr.io/${{ vars.PROJECT_ID }}/image-classifier
-
-          echo "GCS_FETCHER_IMAGE=gcr.io/${{ vars.PROJECT_ID }}/gcs-fetcher:latest" >> $GITHUB_ENV
-          echo "IMAGE_CLASSIFIER_IMAGE=gcr.io/${{ vars.PROJECT_ID }}/image-classifier:latest" >> $GITHUB_ENV
-
       - name: Set Terraform Variables
         run: |
           echo "TF_VAR_project_id=${{ vars.PROJECT_ID }}" >> $GITHUB_ENV

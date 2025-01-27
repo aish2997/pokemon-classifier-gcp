@@ -54,22 +54,8 @@ resource "kubernetes_deployment" "gcs_fetcher" {
       spec {
         container {
           name  = "gcs-fetcher"
-          image = var.gcs_fetcher_image
+          image = "gcs-fetcher"
 
-          env {
-            name  = "CLOUD_RUN_URL"
-            value = var.cloud_run_url
-          }
-
-          env {
-            name  = "GCS_BUCKET_NAME"
-            value = var.gcs_bucket_name
-          }
-
-          env {
-            name  = "BQ_TABLE_ID"
-            value = var.bq_table_id
-          }
         }
       }
     }
@@ -102,7 +88,7 @@ resource "kubernetes_deployment" "image_classifier" {
       spec {
         container {
           name  = "image-classifier"
-          image = var.image_classifier_image
+          image = "image-classifier"
           resources {
             limits = {
               memory = "2Gi"
