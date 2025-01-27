@@ -78,6 +78,11 @@ jobs:
         with:
           project_id: ${{ vars.PROJECT_ID }}
 
+      # Step 3: Authenticate and get GKE credentials
+      - name: Authenticate and configure kubectl for GKE
+        run: |
+          gcloud container clusters get-credentials  ml-classifier-cluster --region europe-west1 --project ${{ vars.PROJECT_ID  }}
+
       - name: Set Terraform Variables
         run: |
           echo "TF_VAR_project_id=${{ vars.PROJECT_ID }}" >> $GITHUB_ENV
