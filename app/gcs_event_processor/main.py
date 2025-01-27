@@ -5,6 +5,27 @@ import functions_framework
 
 @functions_framework.http
 def process_images(request):
+    """
+    Cloud Function to process images from a Google Cloud Storage (GCS) bucket.
+
+    The function performs the following:
+    1. Reads image files from the "incoming/" directory in the specified GCS bucket.
+    2. Sends the images to an image classifier API hosted on a Cloud Run service.
+    3. Stores the classification results in a BigQuery table.
+    4. Moves successfully processed images to the "archive/" directory.
+    5. Moves images that encounter errors during processing to the "error/" directory.
+
+    Environment Variables:
+        - CLOUD_RUN_URL: URL of the image classifier API hosted on Cloud Run.
+        - GCS_BUCKET_NAME: Name of the GCS bucket containing the images.
+        - BQ_TABLE_ID: ID of the BigQuery table to store classification results.
+
+    Args:
+        request (flask.Request): The HTTP request object.
+
+    Returns:
+        Tuple[str, int]: A message indicating the status of processing and an HTTP status code.
+    """
     # Get environment variables
     cloud_run_url = os.getenv("CLOUD_RUN_URL")
     if not cloud_run_url:
