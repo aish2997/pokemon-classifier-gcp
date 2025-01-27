@@ -81,6 +81,7 @@ jobs:
       # Step 3: Authenticate and get GKE credentials
       - name: Authenticate and configure kubectl for GKE
         run: |
+          gcloud components install gke-gcloud-auth-plugin
           gcloud container clusters get-credentials  ml-classifier-cluster --region europe-west1 --project ${{ vars.PROJECT_ID  }}
 
       - name: Set Terraform Variables
