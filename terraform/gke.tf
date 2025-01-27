@@ -15,10 +15,6 @@ resource "google_container_cluster" "primary" {
       "https://www.googleapis.com/auth/trace.append"
     ]
   }
-
-  workload_identity_config {
-    workload_identity_enabled = true
-  }
 }
 
 # Kubernetes Namespace
